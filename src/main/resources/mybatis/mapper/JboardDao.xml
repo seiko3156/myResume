@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.jboard.dao.IJboardDao">
+
+	<resultMap  id="JboardMap" type="java.util.HashMap"></resultMap>
+<!-- 페이징카운트 -->
+<select id="getAllCount" statementType="CALLABLE" parameterType="java.util.HashMap">
+	{
+		CALL getAllCount(
+			#{key},
+			#{cnt,mode=OUT,jdbcType=INTEGER}
+		)
+	}
+</select>
+<!--게시글리스트  -->
+<select id="getJboardList" statementType="CALLABLE" parameterType="java.util.HashMap">
+      {
+         CALL getJboardList (
+         #{startNum}, #{endNum},#{key},
+         #{ref_cursor, mode=OUT, jdbcType=CURSOR, javaType=ResultSet, resultMap=JboardMap}
+         ) 
+      }
+</select >
+<!-- 게시글 입력 -->
+<insert id="insertJboard" statementType="CALLABLE" parameterType="com.jboard.dto.JBoardVO">
+	{
+         CALL insertJboard (
+         #{name}, #{subject},#{content},#{image},#{pass},#{mustread},#{secret}
+         ) 
+      }
+</insert>
+
+
+<!-- 조회수 늘리기 -->
+<update id="boardCount" statementType="CALLABLE" parameterType="java.util.HashMap">
+	{
+         CALL boardCount (
+         #{jseq}
+         ) 
+      }
+</update>
+<!-- 게시글 디테일 -->
+<select id="oneJboard" statementType="CALLABLE" parameterType="java.util.HashMap">
+      {
+         CALL oneJboard (
+         #{jseq},
+         #{ref_cursor, mode=OUT, jdbcType=CURSOR, javaType=ResultSet, resultMap=JboardMap}
+         ) 
+      }
+</select >
+
+<!-- 답변달기 -->
+<update id="replyInsert" statementType="CALLABLE" parameterType="java.util.HashMap">
+	{
+         CALL replyInsert (
+         #{jseq},#{replyjboard}
+         ) 
+      }
+</update>
+
+<!-- 게시글 수정 -->
+<insert id="updateJboard" statementType="CALLABLE" parameterType="com.jboard.dto.JBoardVO">
+	{
+         CALL updateJboard (
+         #{name}, #{subject},#{content},#{image},#{pass},#{mustread},#{secret},#{jseq}
+         ) 
+      }
+</insert>
+<!-- 게시글 삭제 -->
+<delete id="deleteJboard">
+	{
+         CALL deleteJboard (
+         #{jseq}
+         ) 
+      }
+</delete>
+
+</mapper>
